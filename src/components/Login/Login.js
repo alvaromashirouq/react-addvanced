@@ -1,4 +1,4 @@
-import { useEffect, useState, useReducer, useContext } from 'react';
+import {useRef, useEffect, useState, useReducer, useContext } from 'react';
 
 import Card from '../UI/Card/Card';
 import classes from './Login.module.css';
@@ -45,6 +45,8 @@ const passwordReducer = (state, action) => {
 
 const Login = (props) => {
   const ctx = useContext(AuthContext);
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
   // const [enteredEmail, setEnteredEmail] = useState('');
   // const [emailstated, setEmailIsValid] = useState();
   // const [enteredPassword, setEnteredPassword] = useState('');
@@ -93,7 +95,13 @@ const Login = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    ctx.onLogin(emailState.value, passwordState.value);
+    if (formIsValid) {
+      ctx.onLogin(emailState.value, passwordState.value);
+    } else if (!isEmailValid) {
+      emailInputRef.current.focus();
+    } else {
+      passwordInputRef.current.focus();
+    }
   };
 
   return (
@@ -103,16 +111,15 @@ const Login = (props) => {
           id="email"
           isValid={isEmailValid}
           value={emailState.value}
-          label='Email'
+          label="Email"
           onChange={emailChangeHandler}
           onBlur={validateEmailHandler}
         />
         <Input
-          id='password'
+          id="password"
           value={passwordState.value}
           label="Password"
-
-          type={"password"}
+          type={'password'}
           isValid={passwordState.isValid}
           onChange={passwordChangeHandler}
           onBlur={validatePasswordHandler}
